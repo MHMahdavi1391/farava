@@ -547,20 +547,24 @@
     fullDisplay.addEventListener('click', enterDisplayMode);
     displayExit.addEventListener('click', function (e) { e.stopPropagation(); exitDisplayMode(); });
 
-    function onDisplayTap(e) {
+    var lastDisplayTouch = 0;
+    function toggleDisplayControls(e) {
         if (!isDisplayMode) return;
-        if (e.target.closest('.display-controls') || e.target.closest('.display-btn')) return;
+        if (e && (e.target.closest('.display-controls') || e.target.closest('.display-btn'))) return;
         if (displayMode.classList.contains('controls-visible')) hideDisplayControls();
         else showDisplayControls();
     }
-    displayMode.addEventListener('click', onDisplayTap);
     displayMode.addEventListener('touchend', function (e) {
         if (!isDisplayMode) return;
         if (e.target.closest('.display-controls') || e.target.closest('.display-btn')) return;
         e.preventDefault();
-        if (displayMode.classList.contains('controls-visible')) hideDisplayControls();
-        else showDisplayControls();
+        lastDisplayTouch = Date.now();
+        toggleDisplayControls(e);
     }, { passive: false });
+    displayMode.addEventListener('click', function (e) {
+        if (Date.now() - lastDisplayTouch < 600) return;
+        toggleDisplayControls(e);
+    });
     displayMode.addEventListener('mousemove', function () {
         if (isDisplayMode) showDisplayControls();
     });
