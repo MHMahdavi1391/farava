@@ -93,14 +93,9 @@
                 const data = ctx.getImageData(0, 0, size, size).data;
                 let r = 0, g = 0, b = 0, count = 0;
                 for (let i = 0; i < data.length; i += 16) {
-                    r += data[i];
-                    g += data[i + 1];
-                    b += data[i + 2];
-                    count++;
+                    r += data[i]; g += data[i + 1]; b += data[i + 2]; count++;
                 }
-                r = Math.round(r / count);
-                g = Math.round(g / count);
-                b = Math.round(b / count);
+                r = Math.round(r / count); g = Math.round(g / count); b = Math.round(b / count);
                 const dark = `rgb(${Math.round(r * 0.25)}, ${Math.round(g * 0.25)}, ${Math.round(b * 0.25)})`;
                 const mid = `rgb(${Math.round(r * 0.45)}, ${Math.round(g * 0.45)}, ${Math.round(b * 0.45)})`;
                 callback({ dark, mid, r, g, b });
@@ -172,27 +167,19 @@
     const displayExit = document.getElementById('displayExit');
 
     function renderSongs(songs) {
-        if (!songs.length) {
-            songGrid.innerHTML = '';
-            noResults.style.display = 'block';
-            return;
-        }
+        if (!songs.length) { songGrid.innerHTML = ''; noResults.style.display = 'block'; return; }
         noResults.style.display = 'none';
         songGrid.className = 'song-grid';
         songGrid.innerHTML = songs.map(song => `
             <div class="song-card" data-id="${song.id}">
-                <button class="favorite-btn ${isFavorite(song.id) ? 'active' : ''}" data-fav="${song.id}" type="button">
-                    <i class="fas fa-heart"></i>
-                </button>
+                <button class="favorite-btn ${isFavorite(song.id) ? 'active' : ''}" data-fav="${song.id}" type="button"><i class="fas fa-heart"></i></button>
                 <img class="song-card-cover" src="${escapeHTML(song.cover)}" alt="" loading="lazy" onerror="this.src='logo.jpg'">
                 <div class="song-card-info">
                     <div class="song-card-title">${escapeHTML(song.title)}</div>
                     <div class="song-card-artist">${escapeHTML(song.artist)}</div>
                     <span class="song-card-badge">MUSIC</span>
                 </div>
-            </div>
-        `).join('');
-
+            </div>`).join('');
         songGrid.querySelectorAll('.song-card').forEach(card => {
             card.addEventListener('click', (e) => {
                 if (e.target.closest('.favorite-btn')) return;
@@ -200,10 +187,7 @@
             });
         });
         songGrid.querySelectorAll('.favorite-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                toggleFavorite(parseInt(btn.dataset.fav, 10));
-            });
+            btn.addEventListener('click', (e) => { e.stopPropagation(); toggleFavorite(parseInt(btn.dataset.fav, 10)); });
         });
     }
 
@@ -214,25 +198,16 @@
             const q = currentFilter.toLowerCase();
             keys = keys.filter(k => k.toLowerCase().includes(q));
         }
-        if (!keys.length) {
-            songGrid.innerHTML = '';
-            noResults.style.display = 'block';
-            return;
-        }
+        if (!keys.length) { songGrid.innerHTML = ''; noResults.style.display = 'block'; return; }
         noResults.style.display = 'none';
         songGrid.className = 'artist-grid';
         songGrid.innerHTML = keys.map(name => {
             const list = artists[name];
             const cover = list[0] ? list[0].cover : 'logo.jpg';
-            return `
-                <div class="artist-card" data-artist="${escapeHTML(name)}">
-                    <img class="artist-card-cover" src="${escapeHTML(cover)}" alt="" loading="lazy" onerror="this.src='logo.jpg'">
-                    <div class="artist-card-name">
-                        ${escapeHTML(name)}
-                        <span class="artist-card-count">${list.length} song${list.length > 1 ? 's' : ''}</span>
-                    </div>
-                </div>
-            `;
+            return `<div class="artist-card" data-artist="${escapeHTML(name)}">
+                <img class="artist-card-cover" src="${escapeHTML(cover)}" alt="" loading="lazy" onerror="this.src='logo.jpg'">
+                <div class="artist-card-name">${escapeHTML(name)}<span class="artist-card-count">${list.length} song${list.length > 1 ? 's' : ''}</span></div>
+            </div>`;
         }).join('');
         songGrid.querySelectorAll('.artist-card').forEach(card => {
             card.addEventListener('click', () => {
@@ -391,12 +366,12 @@
         if (!song) return;
         updateFullPlayer(song);
         fullPlayer.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('no-scroll');
     }
 
     function closeFullPlayer() {
         fullPlayer.classList.remove('active');
-        document.body.style.overflow = '';
+        if (!isDisplayMode) document.body.classList.remove('no-scroll');
     }
 
     function updateDisplayPlayer(song) {
@@ -406,7 +381,10 @@
         displayArtist.textContent = song.artist || '-';
         displayBlur.style.backgroundImage = `url("${song.cover || 'logo.jpg'}")`;
         extractColors(song.cover || 'logo.jpg', (c) => {
-            displayBg.style.background = `radial-gradient(ellipse at 50% 40%, ${c.mid} 0%, ${c.dark} 70%)`;
+            displayBg.style.background = c.dark;
+            displayBg.style.setProperty('--dm-c1', `rgb(${Math.min(255, c.r + 40)}, ${Math.min(255, Math.round(c.g * 0.7))}, ${Math.round(c.b * 0.5)})`);
+            displayBg.style.setProperty('--dm-c2', `rgb(${Math.round(c.r * 0.5)}, ${Math.min(255, c.g + 20)}, ${Math.min(255, c.b + 40)})`);
+            displayBg.style.setProperty('--dm-c3', c.mid);
         });
     }
 
@@ -418,7 +396,7 @@
         closeFullPlayer();
         displayMode.classList.add('active');
         displayMode.classList.remove('controls-visible');
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('no-scroll');
         const el = document.documentElement;
         if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
         else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
@@ -428,7 +406,7 @@
     function exitDisplayMode() {
         isDisplayMode = false;
         displayMode.classList.remove('active', 'controls-visible', 'show-cursor');
-        document.body.style.overflow = '';
+        document.body.classList.remove('no-scroll');
         if (document.fullscreenElement || document.webkitFullscreenElement) {
             if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
             else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
@@ -512,7 +490,6 @@
     }
 
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
     tabs.forEach(tab => {
         tab.addEventListener('click', function () {
             currentTab = this.dataset.tab;
@@ -524,7 +501,6 @@
             clearBtn.style.display = 'none';
         });
     });
-
     searchInput.addEventListener('input', function () {
         currentFilter = this.value.trim();
         clearBtn.style.display = currentFilter ? 'block' : 'none';
@@ -570,9 +546,7 @@
         if (displayMode.classList.contains('controls-visible')) hideDisplayControls();
         else showDisplayControls();
     });
-    displayMode.addEventListener('mousemove', () => {
-        if (isDisplayMode) showDisplayControls();
-    });
+    displayMode.addEventListener('mousemove', () => { if (isDisplayMode) showDisplayControls(); });
 
     volumeSlider.addEventListener('input', e => setVolume(parseFloat(e.target.value)));
     fullVolumeSlider.addEventListener('input', e => setVolume(parseFloat(e.target.value)));
@@ -596,8 +570,6 @@
             else enterDisplayMode();
         }
     });
-
-    document.addEventListener('fullscreenchange', () => {});
 
     initTheme();
     setVolume(volume);
