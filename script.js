@@ -1,6 +1,6 @@
 /**
  * YELO Music - Premium Player
- * Theme, Full Player, Shuffle, Volume, Recent, Keyboard
+ * Theme, Full Player, Display Mode, Shuffle, Volume, Recent, Keyboard
  */
 (function () {
     'use strict';
@@ -19,6 +19,8 @@
     let artistFilter = '';
     let isDragging = false;
     let volume = parseFloat(localStorage.getItem('yelo_volume') || '1');
+    let displayIdleTimer = null;
+    let isDisplayMode = false;
 
     function initTheme() {
         const saved = localStorage.getItem('yelo_theme') || 'light';
@@ -77,6 +79,41 @@
         return map;
     }
 
+    function extractColors(imgUrl, callback) {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+            try {
+                const canvas = document.createElement('canvas');
+                const size = 40;
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, size, size);
+                const data = ctx.getImageData(0, 0, size, size).data;
+                let r = 0, g = 0, b = 0, count = 0;
+                for (let i = 0; i < data.length; i += 16) {
+                    r += data[i];
+                    g += data[i + 1];
+                    b += data[i + 2];
+                    count++;
+                }
+                r = Math.round(r / count);
+                g = Math.round(g / count);
+                b = Math.round(b / count);
+                const dark = `rgb(${Math.round(r * 0.25)}, ${Math.round(g * 0.25)}, ${Math.round(b * 0.25)})`;
+                const mid = `rgb(${Math.round(r * 0.45)}, ${Math.round(g * 0.45)}, ${Math.round(b * 0.45)})`;
+                callback({ dark, mid, r, g, b });
+            } catch (e) {
+                callback({ dark: '#1a1510', mid: '#2a2018', r: 40, g: 30, b: 20 });
+            }
+        };
+        img.onerror = function () {
+            callback({ dark: '#1a1510', mid: '#2a2018', r: 40, g: 30, b: 20 });
+        };
+        img.src = imgUrl;
+    }
+
     const songGrid = document.getElementById('songGrid');
     const noResults = document.getElementById('noResults');
     const searchInput = document.getElementById('searchInput');
@@ -95,6 +132,7 @@
     const miniShuffle = document.getElementById('miniShuffle');
     const miniDownload = document.getElementById('miniDownload');
     const miniExpand = document.getElementById('miniExpand');
+    const miniDisplay = document.getElementById('miniDisplay');
     const miniProgressFill = document.getElementById('miniProgressFill');
     const miniProgressBar = document.getElementById('miniProgressBar');
     const miniCurrentTime = document.getElementById('miniCurrentTime');
@@ -113,6 +151,7 @@
     const fullLoop = document.getElementById('fullLoop');
     const fullShuffle = document.getElementById('fullShuffle');
     const fullDownload = document.getElementById('fullDownload');
+    const fullDisplay = document.getElementById('fullDisplay');
     const fullProgressFill = document.getElementById('fullProgressFill');
     const fullProgressBar = document.getElementById('fullProgressBar');
     const fullCurrentTime = document.getElementById('fullCurrentTime');
@@ -120,6 +159,17 @@
     const fullVolumeSlider = document.getElementById('fullVolumeSlider');
     const fullClose = document.getElementById('fullClose');
     const fullBackdrop = document.getElementById('fullPlayerBackdrop');
+
+    const displayMode = document.getElementById('displayMode');
+    const displayBg = document.getElementById('displayBg');
+    const displayBlur = document.getElementById('displayBlur');
+    const displayCover = document.getElementById('displayCover');
+    const displayTitle = document.getElementById('displayTitle');
+    const displayArtist = document.getElementById('displayArtist');
+    const displayPlay = document.getElementById('displayPlay');
+    const displayPrev = document.getElementById('displayPrev');
+    const displayNext = document.getElementById('displayNext');
+    const displayExit = document.getElementById('displayExit');
 
     function renderSongs(songs) {
         if (!songs.length) {
@@ -131,7 +181,7 @@
         songGrid.className = 'song-grid';
         songGrid.innerHTML = songs.map(song => `
             <div class="song-card" data-id="${song.id}">
-                <button class="favorite-btn ${isFavorite(song.id) ? 'active' : ''}" data-fav="${song.id}">
+                <button class="favorite-btn ${isFavorite(song.id) ? 'active' : ''}" data-fav="${song.id}" type="button">
                     <i class="fas fa-heart"></i>
                 </button>
                 <img class="song-card-cover" src="${escapeHTML(song.cover)}" alt="" loading="lazy" onerror="this.src='logo.jpg'">
@@ -146,8 +196,7 @@
         songGrid.querySelectorAll('.song-card').forEach(card => {
             card.addEventListener('click', (e) => {
                 if (e.target.closest('.favorite-btn')) return;
-                const id = parseInt(card.dataset.id, 10);
-                playSongById(id, songs);
+                playSongById(parseInt(card.dataset.id, 10), songs);
             });
         });
         songGrid.querySelectorAll('.favorite-btn').forEach(btn => {
@@ -185,7 +234,6 @@
                 </div>
             `;
         }).join('');
-
         songGrid.querySelectorAll('.artist-card').forEach(card => {
             card.addEventListener('click', () => {
                 artistFilter = card.dataset.artist;
@@ -250,6 +298,7 @@
         addToRecent(song);
         showMiniPlayer(song);
         updateFullPlayer(song);
+        updateDisplayPlayer(song);
         updateMediaSession(song);
         updatePlayButtons();
         updateLikeButtons();
@@ -350,10 +399,64 @@
         document.body.style.overflow = '';
     }
 
+    function updateDisplayPlayer(song) {
+        if (!song) return;
+        displayCover.src = song.cover || 'logo.jpg';
+        displayTitle.textContent = song.title || '-';
+        displayArtist.textContent = song.artist || '-';
+        displayBlur.style.backgroundImage = `url("${song.cover || 'logo.jpg'}")`;
+        extractColors(song.cover || 'logo.jpg', (c) => {
+            displayBg.style.background = `radial-gradient(ellipse at 50% 40%, ${c.mid} 0%, ${c.dark} 70%)`;
+        });
+    }
+
+    function enterDisplayMode() {
+        const song = currentPlaylist[currentIndex];
+        if (!song) return;
+        isDisplayMode = true;
+        updateDisplayPlayer(song);
+        closeFullPlayer();
+        displayMode.classList.add('active');
+        displayMode.classList.remove('controls-visible');
+        document.body.style.overflow = 'hidden';
+        const el = document.documentElement;
+        if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+        else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        resetDisplayIdle();
+    }
+
+    function exitDisplayMode() {
+        isDisplayMode = false;
+        displayMode.classList.remove('active', 'controls-visible', 'show-cursor');
+        document.body.style.overflow = '';
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+            if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        }
+        clearTimeout(displayIdleTimer);
+    }
+
+    function showDisplayControls() {
+        if (!isDisplayMode) return;
+        displayMode.classList.add('controls-visible', 'show-cursor');
+        resetDisplayIdle();
+    }
+
+    function hideDisplayControls() {
+        if (!isDisplayMode) return;
+        displayMode.classList.remove('controls-visible', 'show-cursor');
+    }
+
+    function resetDisplayIdle() {
+        clearTimeout(displayIdleTimer);
+        displayIdleTimer = setTimeout(hideDisplayControls, 3500);
+    }
+
     function updatePlayButtons() {
         const icon = isPlaying ? 'fa-pause' : 'fa-play';
         miniPlay.innerHTML = `<i class="fas ${icon}"></i>`;
         fullPlay.innerHTML = `<i class="fas ${icon}"></i>`;
+        displayPlay.innerHTML = `<i class="fas ${icon}"></i>`;
     }
 
     function updateLikeButtons() {
@@ -437,10 +540,13 @@
 
     miniPlay.addEventListener('click', togglePlay);
     fullPlay.addEventListener('click', togglePlay);
+    displayPlay.addEventListener('click', (e) => { e.stopPropagation(); togglePlay(); });
     miniPrev.addEventListener('click', playPrev);
     fullPrev.addEventListener('click', playPrev);
+    displayPrev.addEventListener('click', (e) => { e.stopPropagation(); playPrev(); });
     miniNext.addEventListener('click', playNext);
     fullNext.addEventListener('click', playNext);
+    displayNext.addEventListener('click', (e) => { e.stopPropagation(); playNext(); });
 
     miniLoop.addEventListener('click', () => { loopEnabled = !loopEnabled; updateLoopButtons(); });
     fullLoop.addEventListener('click', () => { loopEnabled = !loopEnabled; updateLoopButtons(); });
@@ -455,6 +561,19 @@
     fullClose.addEventListener('click', closeFullPlayer);
     fullBackdrop.addEventListener('click', closeFullPlayer);
 
+    miniDisplay.addEventListener('click', enterDisplayMode);
+    fullDisplay.addEventListener('click', enterDisplayMode);
+    displayExit.addEventListener('click', (e) => { e.stopPropagation(); exitDisplayMode(); });
+
+    displayMode.addEventListener('click', (e) => {
+        if (e.target.closest('.display-controls')) return;
+        if (displayMode.classList.contains('controls-visible')) hideDisplayControls();
+        else showDisplayControls();
+    });
+    displayMode.addEventListener('mousemove', () => {
+        if (isDisplayMode) showDisplayControls();
+    });
+
     volumeSlider.addEventListener('input', e => setVolume(parseFloat(e.target.value)));
     fullVolumeSlider.addEventListener('input', e => setVolume(parseFloat(e.target.value)));
 
@@ -468,8 +587,17 @@
         else if (e.code === 'ArrowLeft') { e.preventDefault(); playPrev(); }
         else if (e.code === 'KeyL') { loopEnabled = !loopEnabled; updateLoopButtons(); }
         else if (e.code === 'KeyS') { shuffleEnabled = !shuffleEnabled; updateShuffleButtons(); }
-        else if (e.code === 'Escape') closeFullPlayer();
+        else if (e.code === 'Escape') {
+            if (isDisplayMode) exitDisplayMode();
+            else closeFullPlayer();
+        }
+        else if (e.code === 'KeyF' && currentPlaylist.length) {
+            if (isDisplayMode) exitDisplayMode();
+            else enterDisplayMode();
+        }
     });
+
+    document.addEventListener('fullscreenchange', () => {});
 
     initTheme();
     setVolume(volume);
