@@ -24,17 +24,17 @@
                     <button id="clearSearch" class="clear-btn" style="display: none;"><i class="fas fa-times"></i></button>
                 </div>
             </div>
-            <button id="themeToggle" class="theme-btn" title="Toggle theme">
+            <button id="themeToggle" class="theme-btn" title="Toggle theme" type="button">
                 <i class="fas fa-moon"></i>
             </button>
         </div>
     </header>
 
     <div class="tabs" id="tabsContainer">
-        <button class="tab-btn active" data-tab="home">Home</button>
-        <button class="tab-btn" data-tab="artists">Artists</button>
-        <button class="tab-btn" data-tab="favorites">Favorites</button>
-        <button class="tab-btn" data-tab="recent">Recent</button>
+        <button class="tab-btn active" data-tab="home" type="button">Home</button>
+        <button class="tab-btn" data-tab="artists" type="button">Artists</button>
+        <button class="tab-btn" data-tab="favorites" type="button">Favorites</button>
+        <button class="tab-btn" data-tab="recent" type="button">Recent</button>
     </div>
 
     <section class="songs-section">
@@ -72,20 +72,21 @@
             <span class="mini-time" id="miniTotalTime">0:00</span>
         </div>
         <div class="mini-controls">
-            <button class="mini-btn" id="miniShuffle" title="Shuffle"><i class="fas fa-random"></i></button>
-            <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
-            <button class="mini-btn play-btn" id="miniPlay"><i class="fas fa-play"></i></button>
-            <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
-            <button class="mini-btn loop-btn" id="miniLoop" title="Loop"><i class="fas fa-repeat"></i></button>
+            <button class="mini-btn" id="miniShuffle" title="Shuffle" type="button"><i class="fas fa-random"></i></button>
+            <button class="mini-btn" id="miniPrev" type="button"><i class="fas fa-step-backward"></i></button>
+            <button class="mini-btn play-btn" id="miniPlay" type="button"><i class="fas fa-play"></i></button>
+            <button class="mini-btn" id="miniNext" type="button"><i class="fas fa-step-forward"></i></button>
+            <button class="mini-btn loop-btn" id="miniLoop" title="Loop" type="button"><i class="fas fa-repeat"></i></button>
         </div>
         <div class="mini-volume">
             <i class="fas fa-volume-up" id="volumeIcon"></i>
             <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1">
         </div>
         <div class="mini-actions">
-            <button class="mini-btn like-btn" id="miniLike"><i class="fas fa-heart"></i></button>
+            <button class="mini-btn like-btn" id="miniLike" type="button"><i class="fas fa-heart"></i></button>
             <a href="#" id="miniDownload" class="mini-btn" download><i class="fas fa-download"></i></a>
-            <button class="mini-btn" id="miniExpand" title="Open player"><i class="fas fa-expand"></i></button>
+            <button class="mini-btn" id="miniExpand" title="Open player" type="button"><i class="fas fa-expand"></i></button>
+            <button class="mini-btn" id="miniDisplay" title="Display mode" type="button"><i class="fas fa-tv"></i></button>
         </div>
     </div>
 </div>
@@ -94,7 +95,7 @@
 <div class="full-player" id="fullPlayer">
     <div class="full-player-backdrop" id="fullPlayerBackdrop"></div>
     <div class="full-player-content">
-        <button class="full-close" id="fullClose"><i class="fas fa-chevron-down"></i></button>
+        <button class="full-close" id="fullClose" type="button"><i class="fas fa-chevron-down"></i></button>
         <div class="full-cover-wrap">
             <img src="" alt="cover" class="full-cover" id="fullCover">
         </div>
@@ -110,15 +111,16 @@
             <span class="full-time" id="fullTotalTime">0:00</span>
         </div>
         <div class="full-controls">
-            <button class="full-btn" id="fullShuffle"><i class="fas fa-random"></i></button>
-            <button class="full-btn" id="fullPrev"><i class="fas fa-step-backward"></i></button>
-            <button class="full-btn full-play" id="fullPlay"><i class="fas fa-play"></i></button>
-            <button class="full-btn" id="fullNext"><i class="fas fa-step-forward"></i></button>
-            <button class="full-btn" id="fullLoop"><i class="fas fa-repeat"></i></button>
+            <button class="full-btn" id="fullShuffle" type="button"><i class="fas fa-random"></i></button>
+            <button class="full-btn" id="fullPrev" type="button"><i class="fas fa-step-backward"></i></button>
+            <button class="full-btn full-play" id="fullPlay" type="button"><i class="fas fa-play"></i></button>
+            <button class="full-btn" id="fullNext" type="button"><i class="fas fa-step-forward"></i></button>
+            <button class="full-btn" id="fullLoop" type="button"><i class="fas fa-repeat"></i></button>
         </div>
         <div class="full-actions">
-            <button class="full-action-btn" id="fullLike"><i class="fas fa-heart"></i> Like</button>
+            <button class="full-action-btn" id="fullLike" type="button"><i class="fas fa-heart"></i> Like</button>
             <a href="#" id="fullDownload" class="full-action-btn" download><i class="fas fa-download"></i> Download</a>
+            <button class="full-action-btn" id="fullDisplay" type="button"><i class="fas fa-tv"></i> Display</button>
         </div>
         <div class="full-volume">
             <i class="fas fa-volume-down"></i>
@@ -126,6 +128,26 @@
             <i class="fas fa-volume-up"></i>
         </div>
     </div>
+</div>
+
+<!-- Display Mode -->
+<div class="display-mode" id="displayMode">
+    <div class="display-bg" id="displayBg"></div>
+    <div class="display-blur" id="displayBlur"></div>
+    <div class="display-center">
+        <img src="" alt="cover" class="display-cover" id="displayCover">
+        <div class="display-meta" id="displayMeta">
+            <div class="display-title" id="displayTitle">-</div>
+            <div class="display-artist" id="displayArtist">-</div>
+        </div>
+    </div>
+    <div class="display-controls" id="displayControls">
+        <button class="display-btn" id="displayPrev" type="button"><i class="fas fa-step-backward"></i></button>
+        <button class="display-btn display-play" id="displayPlay" type="button"><i class="fas fa-play"></i></button>
+        <button class="display-btn" id="displayNext" type="button"><i class="fas fa-step-forward"></i></button>
+        <button class="display-btn display-exit" id="displayExit" type="button"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="display-hint" id="displayHint">Tap to show controls</div>
 </div>
 
 <script src="script.js"></script>
