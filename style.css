@@ -31,7 +31,7 @@ button:focus, a:focus, input:focus { outline: none !important; box-shadow: none;
     --accent-dark: #d4a830;
     --accent-text: #1a170f;
     --heart: #ff3b30;
-    --mini-bg: rgba(255, 255, 255, 0.92);
+    --mini-bg: rgba(255, 255, 255, 0.72);
 }
 
 .theme-dark {
@@ -50,7 +50,7 @@ button:focus, a:focus, input:focus { outline: none !important; box-shadow: none;
     --accent-dark: #e0b030;
     --accent-text: #1a170f;
     --heart: #ff453a;
-    --mini-bg: rgba(32, 28, 20, 0.94);
+    --mini-bg: rgba(32, 28, 20, 0.72);
 }
 
 * { margin: 0; padding: 0; }
@@ -183,6 +183,8 @@ body.no-scroll { overflow: hidden !important; height: 100vh; }
     position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
     width: calc(100% - 32px); max-width: 960px;
     background: var(--mini-bg);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     border-radius: 20px; border: 1px solid var(--glass-border);
     box-shadow: 0 8px 28px rgba(0,0,0,0.18);
     padding: 10px 16px; z-index: 1000; display: none;
