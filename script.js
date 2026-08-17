@@ -547,12 +547,23 @@
     fullDisplay.addEventListener('click', enterDisplayMode);
     displayExit.addEventListener('click', function (e) { e.stopPropagation(); exitDisplayMode(); });
 
-    displayMode.addEventListener('click', function (e) {
-        if (e.target.closest('.display-controls')) return;
+    function onDisplayTap(e) {
+        if (!isDisplayMode) return;
+        if (e.target.closest('.display-controls') || e.target.closest('.display-btn')) return;
         if (displayMode.classList.contains('controls-visible')) hideDisplayControls();
         else showDisplayControls();
+    }
+    displayMode.addEventListener('click', onDisplayTap);
+    displayMode.addEventListener('touchend', function (e) {
+        if (!isDisplayMode) return;
+        if (e.target.closest('.display-controls') || e.target.closest('.display-btn')) return;
+        e.preventDefault();
+        if (displayMode.classList.contains('controls-visible')) hideDisplayControls();
+        else showDisplayControls();
+    }, { passive: false });
+    displayMode.addEventListener('mousemove', function () {
+        if (isDisplayMode) showDisplayControls();
     });
-    displayMode.addEventListener('mousemove', function () { if (isDisplayMode) showDisplayControls(); });
 
     volumeSlider.addEventListener('input', function (e) { setVolume(parseFloat(e.target.value)); });
     fullVolumeSlider.addEventListener('input', function (e) { setVolume(parseFloat(e.target.value)); });
