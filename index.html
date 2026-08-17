@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fa" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>YELO Music</title>
-    
-    <!-- ===== Favicon ===== -->
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="apple-touch-icon" href="logo.jpg">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="theme-light">
 
 <div class="container" id="app">
-    <!-- Header -->
     <header class="header">
         <div class="header-top">
             <div class="logo-wrapper">
@@ -28,17 +24,19 @@
                     <button id="clearSearch" class="clear-btn" style="display: none;"><i class="fas fa-times"></i></button>
                 </div>
             </div>
+            <button id="themeToggle" class="theme-btn" title="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
     </header>
 
-    <!-- Tabs -->
     <div class="tabs" id="tabsContainer">
         <button class="tab-btn active" data-tab="home">Home</button>
         <button class="tab-btn" data-tab="artists">Artists</button>
         <button class="tab-btn" data-tab="favorites">Favorites</button>
+        <button class="tab-btn" data-tab="recent">Recent</button>
     </div>
 
-    <!-- Song Grid -->
     <section class="songs-section">
         <div id="songGrid" class="song-grid"></div>
         <div id="noResults" class="no-results" style="display: none;">
@@ -47,7 +45,6 @@
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <img src="logo.jpg" alt="YELO" class="footer-logo" loading="lazy">
@@ -59,11 +56,11 @@
     </footer>
 </div>
 
-<!-- ===== Mini Player (Glassmorphism) ===== -->
+<!-- Mini Player -->
 <div class="mini-player" id="miniPlayer">
     <div class="mini-player-inner">
         <img src="" alt="cover" class="mini-cover" id="miniCover">
-        <div class="mini-info">
+        <div class="mini-info" id="miniInfoClick">
             <div class="mini-title" id="miniTitle">-</div>
             <div class="mini-artist" id="miniArtist">-</div>
         </div>
@@ -75,14 +72,58 @@
             <span class="mini-time" id="miniTotalTime">0:00</span>
         </div>
         <div class="mini-controls">
+            <button class="mini-btn" id="miniShuffle" title="Shuffle"><i class="fas fa-random"></i></button>
             <button class="mini-btn" id="miniPrev"><i class="fas fa-step-backward"></i></button>
             <button class="mini-btn play-btn" id="miniPlay"><i class="fas fa-play"></i></button>
             <button class="mini-btn" id="miniNext"><i class="fas fa-step-forward"></i></button>
+            <button class="mini-btn loop-btn" id="miniLoop" title="Loop"><i class="fas fa-repeat"></i></button>
+        </div>
+        <div class="mini-volume">
+            <i class="fas fa-volume-up" id="volumeIcon"></i>
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1">
         </div>
         <div class="mini-actions">
             <button class="mini-btn like-btn" id="miniLike"><i class="fas fa-heart"></i></button>
-            <button class="mini-btn loop-btn" id="miniLoop"><i class="fas fa-repeat"></i></button>
             <a href="#" id="miniDownload" class="mini-btn" download><i class="fas fa-download"></i></a>
+            <button class="mini-btn" id="miniExpand" title="Open player"><i class="fas fa-expand"></i></button>
+        </div>
+    </div>
+</div>
+
+<!-- Full Player -->
+<div class="full-player" id="fullPlayer">
+    <div class="full-player-backdrop" id="fullPlayerBackdrop"></div>
+    <div class="full-player-content">
+        <button class="full-close" id="fullClose"><i class="fas fa-chevron-down"></i></button>
+        <div class="full-cover-wrap">
+            <img src="" alt="cover" class="full-cover" id="fullCover">
+        </div>
+        <div class="full-info">
+            <h2 class="full-title" id="fullTitle">-</h2>
+            <p class="full-artist" id="fullArtist">-</p>
+        </div>
+        <div class="full-progress">
+            <span class="full-time" id="fullCurrentTime">0:00</span>
+            <div class="full-progress-bar" id="fullProgressBar">
+                <div class="full-progress-fill" id="fullProgressFill"></div>
+            </div>
+            <span class="full-time" id="fullTotalTime">0:00</span>
+        </div>
+        <div class="full-controls">
+            <button class="full-btn" id="fullShuffle"><i class="fas fa-random"></i></button>
+            <button class="full-btn" id="fullPrev"><i class="fas fa-step-backward"></i></button>
+            <button class="full-btn full-play" id="fullPlay"><i class="fas fa-play"></i></button>
+            <button class="full-btn" id="fullNext"><i class="fas fa-step-forward"></i></button>
+            <button class="full-btn" id="fullLoop"><i class="fas fa-repeat"></i></button>
+        </div>
+        <div class="full-actions">
+            <button class="full-action-btn" id="fullLike"><i class="fas fa-heart"></i> Like</button>
+            <a href="#" id="fullDownload" class="full-action-btn" download><i class="fas fa-download"></i> Download</a>
+        </div>
+        <div class="full-volume">
+            <i class="fas fa-volume-down"></i>
+            <input type="range" id="fullVolumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+            <i class="fas fa-volume-up"></i>
         </div>
     </div>
 </div>
