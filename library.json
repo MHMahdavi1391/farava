@@ -40,14 +40,6 @@
     "hasMusic": true
   },
   {
-    "id": "unknownespersomaciyato",
-    "title": "Esperso Maciyato",
-    "artist": "Unknown",
-    "cover": "picture/Esperso Maciyato.jpg",
-    "music": "music/Esperso Maciyato (320).mp3",
-    "hasMusic": true
-  },
-  {
     "id": "choyoungwukinhalethethrone",
     "title": "Inhale the Throne",
     "artist": "Cho Young-Wuk",
@@ -237,6 +229,14 @@
     "artist": "Shadmehr Aghili",
     "cover": "picture/Shadmehr Aghili – Ghashangtarin Gonah.jpg",
     "music": "music/Shadmehr Aghili – Ghashangtarin Gonah.mp3",
+    "hasMusic": true
+  },
+  {
+    "id": "tommyespersomaciyato",
+    "title": "Esperso Maciyato",
+    "artist": "Tommy",
+    "cover": "picture/Esperso Maciyato.jpg",
+    "music": "music/Tommy - Esperso Maciyato .mp3",
     "hasMusic": true
   }
 ]
