@@ -40,10 +40,10 @@
     "hasMusic": true
   },
   {
-    "id": "tommyespersomaciato",
+    "id": "unknownespersomaciyato",
     "title": "Esperso Maciyato",
-    "artist": "Tommy",
-    "cover": "picture/spereso.jpg",
+    "artist": "Unknown",
+    "cover": "logo.jpg",
     "music": "music/Esperso Maciyato (320).mp3",
     "hasMusic": true
   },
@@ -51,7 +51,7 @@
     "id": "choyoungwukinhalethethrone",
     "title": "Inhale the Throne",
     "artist": "Cho Young-Wuk",
-    "cover": "picture/bek.jpg",
+    "cover": "logo.jpg",
     "music": "music/Inhale the Throne.mp3",
     "hasMusic": true
   },
