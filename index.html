@@ -3,19 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>YELO Music</title>
+    <meta name="google-site-verification" content="eckEmKRcxO2-v0_uGxKgiAfYmNxzAT6_36wGXXYYWFs" />
+    <title>YELO Music | Lumen Technologies Co.</title>
+    <meta name="description" content="YELO Music — لیبل موسیقی Lumen Technologies Co. پخش و دانلود آثار هنرمندان مستقل.">
+    <meta name="keywords" content="YELO, YELO Music, LTC, موسیقی, لیبل">
+    <meta name="author" content="Lumen Technologies Co.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mhmahdavi1391.github.io/yelo/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="YELO Music">
+    <meta property="og:description" content="لیبل موسیقی LTC برای هنرمندان مستقل.">
+    <meta property="og:url" content="https://mhmahdavi1391.github.io/yelo/">
+    <meta property="og:image" content="https://mhmahdavi1391.github.io/yelo/logo.jpg">
+    <meta property="og:site_name" content="YELO Music">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="YELO Music">
+    <meta name="twitter:image" content="https://mhmahdavi1391.github.io/yelo/logo.jpg">
     <link rel="icon" type="image/jpeg" href="logo.jpg">
     <link rel="apple-touch-icon" href="logo.jpg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="theme-light">
-
 <div class="container" id="app">
     <header class="header">
         <div class="header-top">
             <div class="logo-wrapper">
-                <img src="logo.jpg" alt="YELO" class="logo-img" loading="lazy">
+                <img src="logo.jpg" alt="YELO Music" class="logo-img" loading="lazy">
             </div>
             <div class="search-wrapper">
                 <div class="search-box">
@@ -29,14 +43,12 @@
             </button>
         </div>
     </header>
-
     <div class="tabs" id="tabsContainer">
         <button class="tab-btn active" data-tab="home" type="button">Home</button>
         <button class="tab-btn" data-tab="artists" type="button">Artists</button>
         <button class="tab-btn" data-tab="favorites" type="button">Favorites</button>
         <button class="tab-btn" data-tab="recent" type="button">Recent</button>
     </div>
-
     <section class="songs-section">
         <div id="songGrid" class="song-grid"></div>
         <div id="noResults" class="no-results" style="display: none;">
@@ -44,7 +56,6 @@
             <p>Nothing was found.</p>
         </div>
     </section>
-
     <footer class="footer">
         <div class="footer-content">
             <img src="logo.jpg" alt="YELO" class="footer-logo" loading="lazy">
@@ -55,8 +66,6 @@
         </a>
     </footer>
 </div>
-
-<!-- Mini Player -->
 <div class="mini-player" id="miniPlayer">
     <div class="mini-player-inner">
         <img src="" alt="cover" class="mini-cover" id="miniCover">
@@ -66,9 +75,7 @@
         </div>
         <div class="mini-progress">
             <span class="mini-time" id="miniCurrentTime">0:00</span>
-            <div class="mini-progress-bar" id="miniProgressBar">
-                <div class="mini-progress-fill" id="miniProgressFill"></div>
-            </div>
+            <div class="mini-progress-bar" id="miniProgressBar"><div class="mini-progress-fill" id="miniProgressFill"></div></div>
             <span class="mini-time" id="miniTotalTime">0:00</span>
         </div>
         <div class="mini-controls">
@@ -90,24 +97,18 @@
         </div>
     </div>
 </div>
-
-<!-- Full Player -->
 <div class="full-player" id="fullPlayer">
     <div class="full-player-backdrop" id="fullPlayerBackdrop"></div>
     <div class="full-player-content">
         <button class="full-close" id="fullClose" type="button"><i class="fas fa-chevron-down"></i></button>
-        <div class="full-cover-wrap">
-            <img src="" alt="cover" class="full-cover" id="fullCover">
-        </div>
+        <div class="full-cover-wrap"><img src="" alt="cover" class="full-cover" id="fullCover"></div>
         <div class="full-info">
             <h2 class="full-title" id="fullTitle">-</h2>
             <p class="full-artist" id="fullArtist">-</p>
         </div>
         <div class="full-progress">
             <span class="full-time" id="fullCurrentTime">0:00</span>
-            <div class="full-progress-bar" id="fullProgressBar">
-                <div class="full-progress-fill" id="fullProgressFill"></div>
-            </div>
+            <div class="full-progress-bar" id="fullProgressBar"><div class="full-progress-fill" id="fullProgressFill"></div></div>
             <span class="full-time" id="fullTotalTime">0:00</span>
         </div>
         <div class="full-controls">
@@ -129,8 +130,6 @@
         </div>
     </div>
 </div>
-
-<!-- Display Mode -->
 <div class="display-mode" id="displayMode">
     <div class="display-bg" id="displayBg"></div>
     <div class="display-blur" id="displayBlur"></div>
@@ -149,7 +148,6 @@
     </div>
     <div class="display-hint" id="displayHint">Tap to show controls</div>
 </div>
-
 <script src="script.js"></script>
 </body>
 </html>
